@@ -136,7 +136,7 @@
                 </div>
               </div>
               <div class="col-sm-12">
-                <div class="panel panel-default">
+              ent  <div class="panel panel-default">
                   <div class="panel-heading">
                     <h4 class="panel-title"><i class="fa fa-shopping-cart"></i> Carrinho de Compras</h4>
                   </div>
@@ -158,9 +158,9 @@
                                 <td class="text-center"><a href="product.html"><img src="{{this.item.imagePath}}" alt="{{ this.title }}" title="{{ this.title }}" class="img-thumbnail img-responsive" width="70"></a></td>
                                 <td class="text-left"><a href="product.html">{{ this.item.title }}</a></td>
                                 <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
-                                    <input type="text" name="quantity" value="{{ this.qty }}" size="1" class="form-control">
+                                    <input type="number" name="quantity" value="{{ this.qty }}" size="1" id="input-quantity_{{this.item._id}}" min="0" onchange="atualizarQtde('{{this.item._id}}',this.value)" class="form-control">
                                     <span class="input-group-btn">
-                                    <button data-toggle="tooltip" title="Atualizar" class="btn btn-primary" id="atualizar_{{this.item._id}}" onclick="atualizar('{{this.item._id}}')" ><i class="fa fa-refresh"></i></button>
+                                    <!-- <button data-toggle="tooltip" title="Atualizar" class="btn btn-primary" id="atualizar_{{this.item._id}}" onclick="atualizar('{{this.item._id}}')" ><i class="fa fa-refresh"></i></button> -->
                                     <button data-toggle="tooltip" title="Remover" class="btn btn-danger" id="remover_{{this.item._id}}" onclick="remover('{{this.item._id}}')" ><i class="fa fa-times-circle"></i></button>
                                     </span></div></td>
                                 <td class="text-right">R$ {{ this.item.price }}</td>
@@ -235,6 +235,14 @@ $(document).ready(function() {
 
 });
 
+
+$( "#input-cep" ).change(function() {
+  placeHolder();
+  getCep(this.value);
+  getFrete(this.value);
+});
+
+
 $( "#input-cep" ).change(function() {
   placeHolder();
   getCep(this.value);
@@ -301,10 +309,17 @@ function remover(id){
       }
   });
 }
-function atualizar(id){
-  console.log('atualizar ',id);
+function atualizarQtde(id, qty){
+  if(!isNaN(parseFloat(qty)) && isFinite(qty) && parseInt(qty) >= 0){
+  $.post("/update/"+id, {qty: qty}, function(result){
+      if(result.status == 'success'){
+        $( "#totalCart" ).html( 'R$ ' + result.totalPrice );
+      }
+  });
+  } else {
+      alert('Quantidade inválida');
+  }
 }
-
 function checkEmptyCart(){
   if($.trim($('#body-cart').html()) == ''){
     $("#body-cart").html('<tr><td colspan="5" align="center">Nenhum item no carrinho</td></tr>');

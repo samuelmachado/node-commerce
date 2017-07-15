@@ -80,7 +80,21 @@ router.post('/remove/:id', function(req, res, next) {
     var cart = new Cart(req.session.cart ? req.session.cart : {});
     cart.removeItem(productId);
     req.session.cart = cart;
+    console.log('update', req.session.cart);
     res.send({status:'success', totalPrice: cart.totalPrice});
+});
+
+
+router.post('/update/:id', function(req, res, next) {
+    var productId = req.params.id;
+    var qty =  parseInt(req.body.qty);
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+    Product.findById(productId, function(err, product) {
+      cart.updateItem(productId, qty , product );
+      req.session.cart = cart;
+      console.log(cart);
+      res.send({status:'success', totalPrice: cart.totalPrice});
+    });
 });
 
 router.get('/shopping-cart', function(req, res, next) {
