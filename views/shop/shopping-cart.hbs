@@ -1,35 +1,227 @@
 {{# if products }}
+<div id="container">
+  <div class="container">
+    <!-- Breadcrumb Start-->
+    <ul class="breadcrumb">
+      <li><a href="index.html"><i class="fa fa-home"></i></a></li>
+      <li><a href="cart.html">Carrinho de Compras</a></li>
+      <li><a href="checkout.html">Finalizar Compra</a></li>
+    </ul>
+    <!-- Breadcrumb End-->
     <div class="row">
-        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
-            <ul class="list-group">
-                {{# each products }}
-                    <li class="list-group-item">
-                        <span class="badge">{{ this.qty }}</span>
-                        <strong>{{ this.item.title }}</strong>
-                        <span class="label label-success">${{ this.price }}</span>
-                        <div class="btn-group">
-                            <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown">Action <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="/reduce/{{this.item._id}}">Reduce by 1</a></li>
-                                <li><a href="/remove/{{this.item._id}}">Remove All</a></li>
-                            </ul>
+      <!--Middle Part Start-->
+      <div id="content" class="col-sm-12">
+        <h1 class="title">Checkout</h1>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title"><i class="fa fa-sign-in"></i> Criar uma conta ou fazer login</h4>
+              </div>
+                <div class="panel-body">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" value="register" name="account">
+                          Criar cadastro</label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" checked="checked" value="guest" name="account">
+                          Comprar sem Cadastro</label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" value="returning" name="account">
+                          Já tenho cadastro</label>
+                      </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title"><i class="fa fa-user"></i> Informações Pessoais</h4>
+              </div>
+                <div class="panel-body">
+                      <fieldset id="account">
+                        <div class="form-group required">
+                          <label for="input-nome" class="control-label">Nome</label>
+                          <input type="text" class="form-control" id="input-nome" placeholder="Ex. João" value="" name="nome">
                         </div>
-                    </li>
-                {{/each}}
-            </ul>
+                        <div class="form-group required">
+                          <label for="input-sobrenome" class="control-label">Sobrenome</label>
+                          <input type="text" class="form-control" id="input-sobrenome" placeholder="Ex. Silva" value="" name="sobrenome">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-cpf" class="control-label">CPF</label>
+                          <input type="text" class="form-control" id="input-cpf" placeholder="Ex. 000.000.000-00" value="" name="cpf">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-email" class="control-label">E-Mail</label>
+                          <input type="text" class="form-control" id="input-email" placeholder="Ex. email@provedor.com" value="" name="email">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-telefone" class="control-label">Telefone</label>
+                          <input type="text" class="form-control" id="input-telefone" placeholder="Ex. (00) 0000-0000" value="" name="telefone">
+                        </div>
+                      </fieldset>
+                    </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title"><i class="fa fa-book"></i> Endereço de Entrega</h4>
+              </div>
+                <div class="panel-body">
+                      <fieldset id="address" class="required">
+                        <div class="form-group required">
+                          <label for="input-cep" class="control-label">CEP</label>
+                          <input type="text" class="form-control" id="input-cep" placeholder="Ex. 00000000" maxlength="8" value="" name="cep">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-endereco" class="control-label">Endereço</label>
+                          <input type="text" class="form-control" id="input-endereco" placeholder="Ex. Rua BláBláBlá" value="" name="endereco">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-numero" class="control-label">Número</label>
+                          <input type="text" class="form-control" id="input-numero" placeholder="Ex. 100" value="" name="numero">
+                        </div>
+                        <div class="form-group">
+                          <label for="input-numero" class="control-label">Complemento</label>
+                          <input type="text" class="form-control" id="input-complemento" placeholder="Ex. Apto 10, Bloco A" value="" name="complemento">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-bairro" class="control-label">Bairro</label>
+                          <input type="text" class="form-control" id="input-bairro" placeholder="Ex. Jd. BláBláBlá" value="" name="bairro">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-cidade" class="control-label">Cidade</label>
+                          <input type="text" class="form-control" id="input-cidade" readonly="true" placeholder="Ex. BláBláBlá" value="" name="cidade">
+                        </div>
+                        <div class="form-group required">
+                          <label for="input-estado" class="control-label">Estado</label>
+                          <input type="text" class="form-control" id="input-estado" readonly="true" placeholder="Ex. SP" value="" name="estado">
+                        </div>
+                      </fieldset>
+                    </div>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title"><i class="fa fa-truck"></i> Frete</h4>
+                  </div>
+                    <div class="panel-body">
+                      <p id="text-frete">Por favor, preencha o CEP para carregar as opções de frete.</p>
+                      <!-- <div class="radio">
+                        <label>
+                          <input type="radio" checked="checked" name="Free Shipping">
+                          Free Shipping - $0.00</label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="Flat Shipping Rate">
+                          Flat Shipping Rate - $8.00</label>
+                      </div> -->
+                    </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title"><i class="fa fa-credit-card"></i> Forma de Pagamento</h4>
+                  </div>
+                    <div class="panel-body">
+                      <img src="http://imaginefantasias.com.br/media/pagseguro.jpg" class="img-responsive" alt="">
+                    </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title"><i class="fa fa-shopping-cart"></i> Carrinho de Compras</h4>
+                  </div>
+                    <div class="panel-body">
+                      <div class="table-responsive">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <td class="text-center">Imagem</td>
+                              <td class="text-left">Nome do Produto</td>
+                              <td class="text-left">Quantidade</td>
+                              <td class="text-right">Preço Unitário</td>
+                              <td class="text-right">Total</td>
+                            </tr>
+                          </thead>
+                          <tbody id="body-cart">
+                            {{# each products }}
+                              <tr id="{{this.item._id}}">
+                                <td class="text-center"><a href="product.html"><img src="{{this.item.imagePath}}" alt="{{ this.title }}" title="{{ this.title }}" class="img-thumbnail img-responsive" width="70"></a></td>
+                                <td class="text-left"><a href="product.html">{{ this.item.title }}</a></td>
+                                <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
+                                    <input type="text" name="quantity" value="{{ this.qty }}" size="1" class="form-control">
+                                    <span class="input-group-btn">
+                                    <button data-toggle="tooltip" title="Atualizar" class="btn btn-primary" id="atualizar_{{this.item._id}}" onclick="atualizar('{{this.item._id}}')" ><i class="fa fa-refresh"></i></button>
+                                    <button data-toggle="tooltip" title="Remover" class="btn btn-danger" id="remover_{{this.item._id}}" onclick="remover('{{this.item._id}}')" ><i class="fa fa-times-circle"></i></button>
+                                    </span></div></td>
+                                <td class="text-right">R$ {{ this.item.price }}</td>
+                                <td class="text-right">R$ {{ this.price }}</td>
+                              </tr>
+                            {{/each}}
+                          </tbody>
+                          <tfoot>
+                            <!-- <tr>
+                              <td class="text-right" colspan="4"><strong>Sub-Total:</strong></td>
+                              <td class="text-right">$750.00</td>
+                            </tr>
+                            <tr>
+                              <td class="text-right" colspan="4"><strong>Flat Shipping Rate:</strong></td>
+                              <td class="text-right">$5.00</td>
+                            </tr>
+                            <tr>
+                              <td class="text-right" colspan="4"><strong>Eco Tax (-2.00):</strong></td>
+                              <td class="text-right">$4.00</td>
+                            </tr>
+                            <tr>
+                              <td class="text-right" colspan="4"><strong>VAT (20%):</strong></td>
+                              <td class="text-right">$151.00</td>
+                            </tr> -->
+                            <tr>
+                              <td class="text-right" colspan="4"><strong>Total:</strong></td>
+                              <td class="text-right" id="totalCart">R$ {{ totalPrice }}</td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title"><i class="fa fa-pencil"></i> Alguma observação sobre o seu pedido?</h4>
+                  </div>
+                    <div class="panel-body">
+                      <textarea rows="4" class="form-control" id="input-comentario" name="comentario"></textarea>
+                      <br>
+                      <label class="control-label" for="confirm_agree">
+                        <input type="checkbox" checked="checked" value="1" required="" class="validate required" id="input-termos" name="termos">
+                        <span>Confirmo que li e aceito os <a class="agree" href="#"><b>Termos &amp; Condições</b></a></span> </label>
+                      <div class="buttons">
+                        <div class="pull-right">
+                          <input type="button" class="btn btn-primary" id="button-confirm" value="Confirmar Pedido">
+                        </div>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <!--Middle Part End -->
     </div>
-    <div class="row">
-        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
-            <strong>Total: {{ totalPrice }}</strong>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
-            <a href="/checkout" type="button" class="btn btn-success">Checkout</a>
-        </div>
-    </div>
+  </div>
+</div>
 {{ else }}
     <div class="row">
         <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
@@ -38,3 +230,172 @@
     </div>
 {{/if}}
 
+<script type="text/javascript">
+$(document).ready(function() {
+
+});
+
+$( "#input-cep" ).change(function() {
+  placeHolder();
+  getCep(this.value);
+  getFrete(this.value);
+});
+
+$( "#input-cpf" ).change(function() {
+  if(!valida_cpf( this.value) ){
+    alert("CPF inválido");
+    this.value = '';
+  }
+});
+function getFrete(cep){
+  if(cep === '' || cep.length != 8)
+    return null;
+  const url ='https://rugbybrasil.store/services/frete.php?destino='+cep+'&peso=0.300&comprimento=25.3&altura=2&largura=25';
+  $.get( url, function( data ) {
+    var text_frete = '<div class="radio"> \
+                      <label> \
+                          <input type="radio"  name="frete" value="PAC"> \
+                          PAC - R$ '+ data.PAC.price +' - Entrega em '+ data.PAC.deliveryTime +'\
+                        </label> \
+                    </div> \
+                    <div class="radio"> \
+                      <label> \
+                          <input type="radio"  name="frete" value="SEDEX"> \
+                          SEDEX - R$ '+ data.SEDEX.price +' - Entrega em '+ data.SEDEX.deliveryTime +'\
+                        </label> \
+                    </div>';
+    $( "#text-frete" ).html(text_frete);
+  });
+}
+
+function getCep(cep){
+  $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+  if (!("erro" in dados)) {
+      $("#input-endereco").val(dados.logradouro);
+      $("#input-bairro").val(dados.bairro);
+      $("#input-cidade").val(dados.localidade);
+      $("#input-estado").val(dados.uf);
+  } else {
+      $("#input-cep").val("");
+      alert("CEP não encontrado.");
+    }
+  });
+}
+
+function placeHolder(){
+  $( "#text-frete" ).text('Por favor, preencha o CEP para carregar as opções de frete.');
+  $("#input-endereco").val("");
+  $("#input-bairro").val("");
+  $("#input-cidade").val("");
+  $("#input-estado").val("");
+}
+
+
+function remover(id){
+  $.post("/remove/"+id, function(result){
+      if(result.status == 'success'){
+        $("#remover_"+id ).tooltip('hide');
+        $( "#"+id ).remove( "#"+id );
+        $( "#totalCart" ).html( 'R$ ' + result.totalPrice );
+        checkEmptyCart();
+      }
+  });
+}
+function atualizar(id){
+  console.log('atualizar ',id);
+}
+
+function checkEmptyCart(){
+  if($.trim($('#body-cart').html()) == ''){
+    $("#body-cart").html('<tr><td colspan="5" align="center">Nenhum item no carrinho</td></tr>');
+  }
+}
+
+function calc_digitos_posicoes( digitos, posicoes = 10, soma_digitos = 0 ) {
+
+    // Garante que o valor é uma string
+    digitos = digitos.toString();
+
+    // Faz a soma dos dígitos com a posição
+    // Ex. para 10 posições:
+    //   0    2    5    4    6    2    8    8   4
+    // x10   x9   x8   x7   x6   x5   x4   x3  x2
+    //   0 + 18 + 40 + 28 + 36 + 10 + 32 + 24 + 8 = 196
+    for ( var i = 0; i < digitos.length; i++  ) {
+        // Preenche a soma com o dígito vezes a posição
+        soma_digitos = soma_digitos + ( digitos[i] * posicoes );
+
+        // Subtrai 1 da posição
+        posicoes--;
+
+        // Parte específica para CNPJ
+        // Ex.: 5-4-3-2-9-8-7-6-5-4-3-2
+        if ( posicoes < 2 ) {
+            // Retorno a posição para 9
+            posicoes = 9;
+        }
+    }
+
+    // Captura o resto da divisão entre soma_digitos dividido por 11
+    // Ex.: 196 % 11 = 9
+    soma_digitos = soma_digitos % 11;
+
+    // Verifica se soma_digitos é menor que 2
+    if ( soma_digitos < 2 ) {
+        // soma_digitos agora será zero
+        soma_digitos = 0;
+    } else {
+        // Se for maior que 2, o resultado é 11 menos soma_digitos
+        // Ex.: 11 - 9 = 2
+        // Nosso dígito procurado é 2
+        soma_digitos = 11 - soma_digitos;
+    }
+
+    // Concatena mais um dígito aos primeiro nove dígitos
+    // Ex.: 025462884 + 2 = 0254628842
+    var cpf = digitos + soma_digitos;
+
+    // Retorna
+    return cpf;
+
+} // calc_digitos_posicoes
+
+/*
+ Valida CPF
+
+ Valida se for CPF
+
+ @param  string cpf O CPF com ou sem pontos e traço
+ @return bool True para CPF correto - False para CPF incorreto
+*/
+function valida_cpf( valor ) {
+
+    // Garante que o valor é uma string
+    valor = valor.toString();
+
+    // Remove caracteres inválidos do valor
+    valor = valor.replace(/[^0-9]/g, '');
+
+
+    // Captura os 9 primeiros dígitos do CPF
+    // Ex.: 02546288423 = 025462884
+    var digitos = valor.substr(0, 9);
+
+    // Faz o cálculo dos 9 primeiros dígitos do CPF para obter o primeiro dígito
+    var novo_cpf = calc_digitos_posicoes( digitos );
+
+    // Faz o cálculo dos 10 dígitos do CPF para obter o último dígito
+    var novo_cpf = calc_digitos_posicoes( novo_cpf, 11 );
+
+    // Verifica se o novo CPF gerado é idêntico ao CPF enviado
+    if ( novo_cpf === valor ) {
+        // CPF válido
+        return true;
+    } else {
+        // CPF inválido
+        return false;
+    }
+
+} // valida_cpf
+
+</script>

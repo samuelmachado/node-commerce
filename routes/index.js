@@ -27,10 +27,19 @@ var cache = (duration) => {
 
 
 /* GET home page. */
-router.get('/', cache(10), function (req, res, next) {
+router.get('/', function (req, res, next) {
     var successMsg = req.flash('success')[0];
+    var response;
     Product.find(function (err, docs) {
-        res.render('shop/index', {title: 'Shopping Cart', products: docs, successMsg: successMsg, noMessages: !successMsg});
+      if (req.session.cart) {
+        var cart = new Cart(req.session.cart);
+        response =  {title: 'Shopping Cart', products: docs, sessionCart: cart.generateArray(), totalPrice: cart.totalPrice, successMsg: successMsg, noMessages: !successMsg};
+      } else {
+         response = {title: 'Shopping Cart', products: docs, sessionCart: null, totalPrice: null, successMsg: successMsg, noMessages: !successMsg};
+      }
+       //cart
+       //
+        res.render('shop/index',response);
     });
 });
 
@@ -55,7 +64,7 @@ router.get('/reduce/:id', function(req, res, next) {
 
     cart.reduceByOne(productId);
     req.session.cart = cart;
-    res.redirect('/shopping-cart');
+    res.redirect('/');
 });
 
 router.get('/remove/:id', function(req, res, next) {
@@ -64,7 +73,14 @@ router.get('/remove/:id', function(req, res, next) {
 
     cart.removeItem(productId);
     req.session.cart = cart;
-    res.redirect('/shopping-cart');
+    res.redirect('/');
+});
+router.post('/remove/:id', function(req, res, next) {
+    var productId = req.params.id;
+    var cart = new Cart(req.session.cart ? req.session.cart : {});
+    cart.removeItem(productId);
+    req.session.cart = cart;
+    res.send({status:'success', totalPrice: cart.totalPrice});
 });
 
 router.get('/shopping-cart', function(req, res, next) {
@@ -72,7 +88,7 @@ router.get('/shopping-cart', function(req, res, next) {
        return res.render('shop/shopping-cart', {products: null});
    }
     var cart = new Cart(req.session.cart);
-    res.render('shop/shopping-cart', {products: cart.generateArray(), totalPrice: cart.totalPrice});
+    res.render('shop/shopping-cart', {checkout: true, products: cart.generateArray(), totalPrice: cart.totalPrice});
 });
 
 router.get('/checkout', isLoggedIn, function(req, res, next) {
