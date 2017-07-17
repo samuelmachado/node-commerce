@@ -12,7 +12,8 @@
       <!--Middle Part Start-->
       <div id="content" class="col-sm-12">
         <h1 class="title">Checkout</h1>
-        <div class="row">
+        <form id="form">
+          <div class="row">
           <div class="col-sm-4">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -45,22 +46,27 @@
                         <div class="form-group required">
                           <label for="input-nome" class="control-label">Nome</label>
                           <input type="text" class="form-control" id="input-nome" placeholder="Ex. João" value="" name="nome">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-sobrenome" class="control-label">Sobrenome</label>
                           <input type="text" class="form-control" id="input-sobrenome" placeholder="Ex. Silva" value="" name="sobrenome">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-cpf" class="control-label">CPF</label>
                           <input type="text" class="form-control" id="input-cpf" placeholder="Ex. 000.000.000-00" value="" name="cpf">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-email" class="control-label">E-Mail</label>
                           <input type="text" class="form-control" id="input-email" placeholder="Ex. email@provedor.com" value="" name="email">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-telefone" class="control-label">Telefone</label>
                           <input type="text" class="form-control" id="input-telefone" placeholder="Ex. (00) 0000-0000" value="" name="telefone">
+                          <span class="help-block"></span>
                         </div>
                       </fieldset>
                     </div>
@@ -74,30 +80,37 @@
                         <div class="form-group required">
                           <label for="input-cep" class="control-label">CEP</label>
                           <input type="text" class="form-control" id="input-cep" placeholder="Ex. 00000000" maxlength="8" value="" name="cep">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-endereco" class="control-label">Endereço</label>
                           <input type="text" class="form-control" id="input-endereco" placeholder="Ex. Rua BláBláBlá" value="" name="endereco">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-numero" class="control-label">Número</label>
                           <input type="text" class="form-control" id="input-numero" placeholder="Ex. 100" value="" name="numero">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group">
                           <label for="input-numero" class="control-label">Complemento</label>
                           <input type="text" class="form-control" id="input-complemento" placeholder="Ex. Apto 10, Bloco A" value="" name="complemento">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-bairro" class="control-label">Bairro</label>
                           <input type="text" class="form-control" id="input-bairro" placeholder="Ex. Jd. BláBláBlá" value="" name="bairro">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-cidade" class="control-label">Cidade</label>
                           <input type="text" class="form-control" id="input-cidade" readonly="true" placeholder="Ex. BláBláBlá" value="" name="cidade">
+                          <span class="help-block"></span>
                         </div>
                         <div class="form-group required">
                           <label for="input-estado" class="control-label">Estado</label>
                           <input type="text" class="form-control" id="input-estado" readonly="true" placeholder="Ex. SP" value="" name="estado">
+                          <span class="help-block"></span>
                         </div>
                       </fieldset>
                     </div>
@@ -164,7 +177,7 @@
                                     <button data-toggle="tooltip" title="Remover" class="btn btn-danger" id="remover_{{this.item._id}}" onclick="remover('{{this.item._id}}')" ><i class="fa fa-times-circle"></i></button>
                                     </span></div></td>
                                 <td class="text-right">R$ {{ this.item.price }}</td>
-                                <td class="text-right">R$ {{ this.price }}</td>
+                                <td class="text-right" id="totalUnit_{{ this.item._id }}">R$ {{ this.price }}</td>
                               </tr>
                             {{/each}}
                           </tbody>
@@ -208,7 +221,7 @@
                         <span>Confirmo que li e aceito os <a class="agree" href="#"><b>Termos &amp; Condições</b></a></span> </label>
                       <div class="buttons">
                         <div class="pull-right">
-                          <input type="button" class="btn btn-primary" id="button-confirm" value="Confirmar Pedido">
+                          <button type="button" id="btnSave" onclick="save()" class="btn btn-primary" id="button-confirm">Confirmar Pedido</button>
                         </div>
                       </div>
                     </div>
@@ -217,6 +230,7 @@
             </div>
           </div>
         </div>
+        </form>
       </div>
       <!--Middle Part End -->
     </div>
@@ -236,15 +250,15 @@ $(document).ready(function() {
 });
 
 
-$( "#input-cep" ).change(function() {
-  placeHolder();
-  getCep(this.value);
-  getFrete(this.value);
-});
 
 
 $( "#input-cep" ).change(function() {
   placeHolder();
+   if(isNaN(parseFloat(this.value)) && !isFinite(this.value)){
+     $(this).val("");
+     $(this).focus();
+     return alert('O campo de CEP deve conter somente números');
+   }
   getCep(this.value);
   getFrete(this.value);
 });
@@ -252,7 +266,8 @@ $( "#input-cep" ).change(function() {
 $( "#input-cpf" ).change(function() {
   if(!valida_cpf( this.value) ){
     alert("CPF inválido");
-    this.value = '';
+    $(this).val("");
+    $(this).focus();
   }
 });
 function getFrete(cep){
@@ -285,6 +300,7 @@ function getCep(cep){
       $("#input-estado").val(dados.uf);
   } else {
       $("#input-cep").val("");
+      $("#input-cep").focus();
       alert("CEP não encontrado.");
     }
   });
@@ -314,6 +330,7 @@ function atualizarQtde(id, qty){
   $.post("/update/"+id, {qty: qty}, function(result){
       if(result.status == 'success'){
         $( "#totalCart" ).html( 'R$ ' + result.totalPrice );
+        $("#totalUnit_" + id).html('R$ ' + result.totalUnit);
       }
   });
   } else {
@@ -412,5 +429,50 @@ function valida_cpf( valor ) {
     }
 
 } // valida_cpf
+
+function save()
+{
+    $('#btnSave').text('...'); //change button text
+    $('#btnSave').attr('disabled',true); //set button disable
+    var url;
+
+    url = "/cart/";
+
+    $.ajax({
+        url : url,
+        type: "POST",
+        data: $('#form').serialize(),
+        dataType: "JSON",
+        success: function(data)
+        {
+            if(data.status) //if success close modal and reload ajax table
+            {
+                alert("Ok");
+            }
+            else
+            {
+
+                $('[class="form-control"]').parent().removeClass('has-error');
+                $('[class="form-control"]').next().text("");
+                for (var i = 0; i < data.length; i++)
+                {
+                    $('[name="'+data[i].inputerror+'"]').parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
+                    $('[name="'+data[i].inputerror+'"]').next().text(data[i].error_string); //select span help-block class set text error
+                }
+            }
+            $('#btnSave').text('Confirmar Pedido'); //change button text
+            $('#btnSave').attr('disabled',false); //set button enable
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+            alert('Erro ao adicionar ou atualizar as informações.');
+            $('#btnSave').text('Confirmar Pedido'); //change button text
+            $('#btnSave').attr('disabled',false); //set button enable
+        }
+    });
+}
 
 </script>

@@ -90,10 +90,10 @@ router.post('/update/:id', function(req, res, next) {
     var qty =  parseInt(req.body.qty);
     var cart = new Cart(req.session.cart ? req.session.cart : {});
     Product.findById(productId, function(err, product) {
-      cart.updateItem(productId, qty , product );
+      var totalUnit = cart.updateItem(productId, qty , product );
       req.session.cart = cart;
       console.log(cart);
-      res.send({status:'success', totalPrice: cart.totalPrice});
+      res.send({status:'success', totalPrice: cart.totalPrice, totalUnit: totalUnit });
     });
 });
 
@@ -104,6 +104,29 @@ router.get('/shopping-cart', function(req, res, next) {
     var cart = new Cart(req.session.cart);
     res.render('shop/shopping-cart', {checkout: true, products: cart.generateArray(), totalPrice: cart.totalPrice});
 });
+
+router.post('/cart', function(req, res, next) {
+   var data = [];
+   var flag = true;
+   requiredFields = ['nome', 'sobrenome', 'cpf', 'telefone', 'email', 'telefone', 'cep', 'endereco','numero', 'bairro', 'cidade','estado'];
+   requiredFields.forEach((value, index) => {
+     if(req.body[value] == ''){
+       data.push({inputerror: value, error_string: 'Por favor, preencha este campo.'});
+       flag = false;
+     }
+   });
+
+   if(req.body.cep.length < 8  || (isNaN(parseFloat(req.body.cep)) && !isFinite(req.body.cep) ) ){
+     data.push({inputerror: 'cep', error_string:'Por favor, este campo deve conter 8 caracteres númericos.'});
+     flag = false;
+   }
+
+
+   if(flag === false)
+     return res.send(data);
+   return res.send({status: true});
+});
+
 
 router.get('/checkout', isLoggedIn, function(req, res, next) {
     if (!req.session.cart) {
