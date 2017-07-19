@@ -17,7 +17,9 @@ var userRoutes = require('./routes/user');
 
 var app = express();
 
-mongoose.connect('localhost:27017/shopping');
+//mongoose.connect('localhost:27017/shopping');
+mongoose.connect('mongodb://ecommerce:budokai102@ds019846.mlab.com:19846/arteiro');
+
 require('./config/passport');
 
 // view engine setup
@@ -85,5 +87,5 @@ app.use(function(err, req, res, next) {
 
 
 
-app.listen(3000, console.log('Server Up'));
+app.listen(process.env.PORT || 3000, console.log('Server Up'));
 module.exports = app;

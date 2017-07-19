@@ -12,7 +12,7 @@
       <!--Middle Part Start-->
       <div id="content" class="col-sm-12">
         <h1 class="title">Checkout</h1>
-        <form id="form">
+        <form id="form" method="post">
           <div class="row">
           <div class="col-sm-4">
             <div class="panel panel-default">
@@ -89,7 +89,7 @@
                         </div>
                         <div class="form-group required">
                           <label for="input-numero" class="control-label">Número</label>
-                          <input type="text" class="form-control" id="input-numero" placeholder="Ex. 100" value="" name="numero">
+                          <input type="number" class="form-control" id="input-numero" placeholder="Ex. 100" value="" name="numero">
                           <span class="help-block"></span>
                         </div>
                         <div class="form-group">
@@ -149,7 +149,7 @@
                 </div>
               </div>
               <div class="col-sm-12">
-              ent  <div class="panel panel-default">
+                <div class="panel panel-default">
                   <div class="panel-heading">
                     <h4 class="panel-title"><i class="fa fa-shopping-cart"></i> Carrinho de Compras</h4>
                   </div>
@@ -172,9 +172,10 @@
                                 <td class="text-left"><a href="product.html">{{ this.item.title }}</a></td>
                                 <td class="text-left"><div class="input-group btn-block" style="max-width: 200px;">
                                     <input type="number" name="quantity" value="{{ this.qty }}" size="1" id="input-quantity_{{this.item._id}}" min="0" onchange="atualizarQtde('{{this.item._id}}',this.value)" class="form-control">
+                                    <span></span>
                                     <span class="input-group-btn">
                                     <!-- <button data-toggle="tooltip" title="Atualizar" class="btn btn-primary" id="atualizar_{{this.item._id}}" onclick="atualizar('{{this.item._id}}')" ><i class="fa fa-refresh"></i></button> -->
-                                    <button data-toggle="tooltip" title="Remover" class="btn btn-danger" id="remover_{{this.item._id}}" onclick="remover('{{this.item._id}}')" ><i class="fa fa-times-circle"></i></button>
+                                    <a data-toggle="tooltip" title="Remover" class="btn btn-danger" id="remover_{{this.item._id}}" onclick="remover('{{this.item._id}}')" ><i class="fa fa-times-circle"></i></a>
                                     </span></div></td>
                                 <td class="text-right">R$ {{ this.item.price }}</td>
                                 <td class="text-right" id="totalUnit_{{ this.item._id }}">R$ {{ this.price }}</td>
@@ -239,25 +240,18 @@
 {{ else }}
     <div class="row">
         <div class="col-sm-6 col-md-6 col-md-offset-3 col-sm-offset-3">
-            <h2>No Items in Cart</h2>
+            <center><h2>Nenhum item no carrinho</h2></center>
         </div>
     </div>
 {{/if}}
 
 <script type="text/javascript">
-$(document).ready(function() {
-
-});
-
-
-
-
 $( "#input-cep" ).change(function() {
   placeHolder();
    if(isNaN(parseFloat(this.value)) && !isFinite(this.value)){
      $(this).val("");
      $(this).focus();
-     return alert('O campo de CEP deve conter somente números');
+     return swal('Atenção!', 'O campo de CEP deve conter somente números.', 'warning');
    }
   getCep(this.value);
   getFrete(this.value);
@@ -265,7 +259,7 @@ $( "#input-cep" ).change(function() {
 
 $( "#input-cpf" ).change(function() {
   if(!valida_cpf( this.value) ){
-    alert("CPF inválido");
+    swal('Atenção!', 'o CPF digitado é inválido', 'warning')
     $(this).val("");
     $(this).focus();
   }
@@ -283,8 +277,9 @@ function getFrete(cep){
                     </div> \
                     <div class="radio"> \
                       <label> \
-                          <input type="radio"  name="frete" value="SEDEX"> \
+                          <input type="radio" class="form-checkout" name="frete" value="SEDEX"> \
                           SEDEX - R$ '+ data.SEDEX.price +' - Entrega em '+ data.SEDEX.deliveryTime +'\
+                          <span class="help-block"></span> \
                         </label> \
                     </div>';
     $( "#text-frete" ).html(text_frete);
@@ -301,7 +296,7 @@ function getCep(cep){
   } else {
       $("#input-cep").val("");
       $("#input-cep").focus();
-      alert("CEP não encontrado.");
+      swal('Atenção!', 'O CEP digitado é inválido.', 'warning')
     }
   });
 }
@@ -334,12 +329,15 @@ function atualizarQtde(id, qty){
       }
   });
   } else {
-      alert('Quantidade inválida');
+      $("#input-quantity_"+id).val("1");
+      atualizarQtde(id,1);
+      swal('Atenção!', 'Quantidade inválida, colocamos o valor mínimo.', 'warning')
   }
 }
 function checkEmptyCart(){
   if($.trim($('#body-cart').html()) == ''){
     $("#body-cart").html('<tr><td colspan="5" align="center">Nenhum item no carrinho</td></tr>');
+    $('#btnSave').attr('disabled',true);
   }
 }
 
@@ -447,11 +445,26 @@ function save()
         {
             if(data.status) //if success close modal and reload ajax table
             {
-                alert("Ok");
+              swal({
+                    title: 'Tudo certo!',
+                    text: 'Estamos te levando até o PagSeguro.',
+                    type: 'success',
+                    timer: 2500
+                  }).then(
+                    function () {},
+                    // handling the promise rejection
+                    function (dismiss) {
+                      if (dismiss === 'timer') {
+                        window.location.href = "/checkout";
+                      }
+                    }
+                  )
             }
             else
             {
 
+              $('[class="form-checkout"]').parent().removeClass('has-error');
+              $('[class="form-checkout"]').next().text("");
                 $('[class="form-control"]').parent().removeClass('has-error');
                 $('[class="form-control"]').next().text("");
                 for (var i = 0; i < data.length; i++)
@@ -468,7 +481,7 @@ function save()
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
-            alert('Erro ao adicionar ou atualizar as informações.');
+            swal('Tivemos um problema', 'Contate o suporte técnico', 'error')
             $('#btnSave').text('Confirmar Pedido'); //change button text
             $('#btnSave').attr('disabled',false); //set button enable
         }

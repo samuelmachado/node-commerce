@@ -1,4 +1,5 @@
 var express = require('express');
+const axios = require('axios');
 var router = express.Router();
 var Cart = require('../models/cart');
 
@@ -108,7 +109,7 @@ router.get('/shopping-cart', function(req, res, next) {
 router.post('/cart', function(req, res, next) {
    var data = [];
    var flag = true;
-   requiredFields = ['nome', 'sobrenome', 'cpf', 'telefone', 'email', 'telefone', 'cep', 'endereco','numero', 'bairro', 'cidade','estado'];
+   requiredFields = ['nome' ,'sobrenome', 'cpf', 'telefone', 'email', 'telefone', 'cep', 'endereco','numero', 'bairro', 'cidade','estado'];
    requiredFields.forEach((value, index) => {
      if(req.body[value] == ''){
        data.push({inputerror: value, error_string: 'Por favor, preencha este campo.'});
@@ -121,22 +122,90 @@ router.post('/cart', function(req, res, next) {
      flag = false;
    }
 
-
-   if(flag === false)
+   if(!req.body.frete){
+     data.push({inputerror: 'frete', error_string: 'Por favor, preencha este campo.'});
+     flag = false;
+   }
+   if(flag === true){
+     return res.send({status: true});
+   } else {
      return res.send(data);
-   return res.send({status: true});
+   }
 });
 
+xml = require('jstoxml');
 
-router.get('/checkout', isLoggedIn, function(req, res, next) {
+req = require('request');
+
+var caralho = (cart) => {
+return new Promise(
+  function(resolve, reject){
+  var pag, pagseguro;
+  pagseguro = require('pagseguro');
+   pag = new pagseguro({
+       email : 'analista@visualmode.com.br',
+       token: '07921C2E8097427A8380818AEC54D0DC',
+       mode : 'sandbox'
+   });
+   pag.currency('BRL');
+   pag.reference('12345');
+
+  cart.generateArray().forEach((value, index) => {
+     pag.addItem({
+         id: index + 1,
+         description: value.item.title,
+         amount:  (value.price / value.qty).toFixed( 2 ),
+         quantity: value.qty,
+         weight: 1
+     });
+   });
+
+   pag.buyer({
+        name: 'José Comprador',
+        email: 'c87394812323892333558@sandbox.pagseguro.com.br',
+        phoneAreaCode: '51',
+        phoneNumber: '12345678',
+    });
+
+    pag.shipping({
+        type: 1,
+        street: 'Rua Alameda dos Anjos',
+        number: '367',
+        complement: 'Apto 307',
+        district: 'Parque da Lagoa',
+        postalCode: '01452002',
+        city: 'São Paulo',
+        state: 'RS',
+        country: 'BRA'
+    });
+    pag.send(function(err, res) {
+    if (err) {
+        reject(err);
+    }
+    var parseString = require('xml2js').parseString;
+      parseString(res, function (err, result) {
+          //console.log(JSON.stringify(result));
+          //resolve('');
+          resolve(result.checkout.code);
+      });
+    });
+
+  });
+}
+router.get('/checkout', function(req, res, next) {
     if (!req.session.cart) {
         return res.redirect('/shopping-cart');
     }
     var cart = new Cart(req.session.cart);
     var errMsg = req.flash('error')[0];
-    res.render('shop/checkout', {total: cart.totalPrice, errMsg: errMsg, noError: !errMsg});
-});
+    caralho(cart).then((code) => {
+      res.render('shop/checkout', {total: cart.totalPrice, errMsg: errMsg, noError: !errMsg, code: code });
 
+    });
+});
+router.get('/processado/:code/:newTransaction', (req, res) => {
+  res.send("Tudo certo, código da transação: " + req.params.code);
+});
 router.post('/checkout', isLoggedIn, function(req, res, next) {
     if (!req.session.cart) {
         return res.redirect('/shopping-cart');

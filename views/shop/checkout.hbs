@@ -1,0 +1,20 @@
+<script type="text/javascript"
+            src="https://stc.sandbox.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.lightbox.js"></script>
+<script type="text/javascript">
+
+var isOpenLightbox = PagSeguroLightbox({
+  code: "{{code}}"
+}, {
+  success : function(transactionCode) {
+      window.location.replace("http://localhost:3000/processado/" +transactionCode + "/1");
+  },
+  abort : function() {
+    swal('Atenção!', 'Você cancelou a transação, atualize a página para recomeçar.', 'warning');
+  }
+});
+// Redirecionando o cliente caso o navegador não tenha suporte ao Lightbox
+if (!isOpenLightbox){
+  location.href="https://sandbox.pagseguro.uol.com.br/v2/checkout/payment.html?code={{code}}";
+}
+</script>
+<center><h1>Em instantes o PagSeguro será exibido.</h1></center>
